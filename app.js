@@ -1,6 +1,7 @@
 const express=require('express')
 const exphbs = require('express-handlebars')
 const Todo=require('./models/todo')
+const User=require('./models/user')
 const routes=require('./routes')
 const methodOverride = require('method-override') 
 require('./config/mongoose')
