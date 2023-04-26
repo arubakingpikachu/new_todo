@@ -1,5 +1,6 @@
 const express=require('express')
 const User=require('../../models/user')// 引入User model
+const passport = require('passport')//引入passport
 
 const router=express.Router()
 
@@ -7,8 +8,11 @@ router.get('/login', (req, res) => {
   res.render('login')
 })//燈入夜面
 
-router.post('/login',(req,res)=>{
-})
+router.post('/login',passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/users/login'
+}))
+
 router.get('/register',(req,res)=>{
   res.render('register')
 })

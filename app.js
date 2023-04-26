@@ -5,6 +5,7 @@ const User=require('./models/user')
 const routes=require('./routes')
 const methodOverride = require('method-override') 
 const session = require('express-session')
+const usePort=require('./config/passport')
 require('./config/mongoose')
 
 
@@ -23,6 +24,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
+usePort(app)
 
 
 
