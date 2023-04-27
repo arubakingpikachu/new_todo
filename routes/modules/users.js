@@ -11,11 +11,11 @@ router.get('/login', (req, res) => {
 router.post('/login',passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/users/login'
-}))
+}))//登入機制
 
 router.get('/register',(req,res)=>{
   res.render('register')
-})
+})//註冊畫面
 
 router.post('/register',(req,res)=>{
   const{name,email,password,confirmPassword}=req.body
@@ -41,6 +41,11 @@ router.post('/register',(req,res)=>{
     }
   }))
   .catch(error => console.log(error))
-})//註冊帳號
+})//註冊帳號機制
+
+router.get('/logout',(req,res)=>{
+  req.logout()
+  res.redirect('/users/login')
+})
 
 module.exports = router
