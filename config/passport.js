@@ -2,9 +2,9 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const User=require('../models/user')
 
-modules.exports=app=>{
+module.exports=app=>{
 
-  app.use(passport.initialize())// is a middle-ware that初始化Passport
+  app.use(passport.initialize());// is a middle-ware that初始化Passport
   app.use(passport.session())//that alters the request object and change the 'user' value that is currently the session id (from the client cookie) into the true deserialized user object.
 
   passport.use(new LocalStrategy ({ usernameField: 'email' },(email, password, done) =>{
