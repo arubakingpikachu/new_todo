@@ -1,6 +1,7 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const User=require('../models/user')
+const bcrypt = require('bcryptjs')
 
 module.exports=app=>{
 
@@ -11,9 +12,11 @@ module.exports=app=>{
     User.findOne({email})
     .then(user=>{
       if (!user) { return done(null, false, { message: 'That email is not registered!' })}
-      if(user.password!==password) {
-      return done(null, false, { message: 'Email or Password incorrect.' })}
-      return done(null, user)
+      return bcrypt.compare(password,user.password)//前參數=使用者的輸入值;後參數=資料庫裡的雜湊值
+      .then(isMatch=>
+        {if(!isMatch) {
+        return done(null, false, { message: 'Email or Password incorrect.' })}
+        return done(null, user)})//isMatch為bcrypt.compare回傳的布林值
     })
     .catch(err => done(err, false))
    
