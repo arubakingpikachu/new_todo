@@ -6,6 +6,7 @@ const User=require('./models/user')
 const routes=require('./routes')
 const methodOverride = require('method-override') 
 const usePassPort=require('./config/passport')
+const flash=require('connect-flash')
 require('./config/mongoose')
 
 
@@ -25,10 +26,12 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
 usePassPort(app)//要放在路由器前面!!!!!!!
-
+app.use(flash())
 app.use((req,res,next)=>{
   res.locals.isAuthenticated=req.isAuthenticated()
   res.locals.user=req.user
+  res.locals.success_msg = req.flash('success_msg')//設定 success_msg 訊息
+  res.locals.warning_msg = req.flash('warning_msg')//設定 warning_msg 訊息
   next()
 })
 

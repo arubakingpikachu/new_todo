@@ -19,32 +19,48 @@ router.get('/register',(req,res)=>{
 
 router.post('/register',(req,res)=>{
   const{name,email,password,confirmPassword}=req.body
+  const errors=[]//登入頁的錯誤訊息，設計成陣列，依照不同情況顯示訊息
 
-  User.findOne({email:email})
-  .then((user=>{
-    if(user){
-      console.log('User already exists.')
-      res.render('register',{
+  if (!name||!email||!password||!confirmPassword){
+    errors.push({message: '所有欄位都是必填。'})
+  }//若其中一項不存在，在error陣列推入錯誤訊息
+  if (password!==confirmPassword){
+    errors.push({message:'密碼與確認密碼不相符！'})
+  }
+  if (errors.length) {
+    return res.render('register', {
+      errors,
+      name,
+      email,
+      password,
+      confirmPassword
+    })
+  }
+
+  User.findOne({ email }).then(user => {
+    if (user) {
+      errors.push({ message: '這個 Email 已經註冊過了。' })
+      return res.render('register', {
+        errors,
         name,
         email,
         password,
         confirmPassword
       })
-    }else{
-      return User.create({
-        name,
-        email,
-        password
-      })
-      .then(()=>res.redirect('/'))
-      .catch(error => console.log(error))
     }
-  }))
-  .catch(error => console.log(error))
+    return User.create({
+      name,
+      email,
+      password
+    })
+      .then(() => res.redirect('/'))
+      .catch(err => console.log(err))
+  })
 })//註冊帳號機制
 
 router.get('/logout',(req,res)=>{
   req.logout()
+  req.flash('success_msg', '你已經成功登出。')
   res.redirect('/users/login')
 })
 

@@ -9,6 +9,12 @@ const todoSchema=new Schema(
    isDone: {
     type: Boolean,              
     default: false
+    },
+    userId:{
+      type: Schema.Types.ObjectId,
+      ref:'user',
+      index:true,
+      required: true
     }
   }
 )
