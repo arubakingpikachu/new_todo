@@ -2,6 +2,9 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const User=require('../models/user')
 const bcrypt = require('bcryptjs')
+const FacebookStrategy = require('passport-facebook').Strategy
+
+
 
 module.exports=app=>{
 
@@ -23,6 +26,32 @@ module.exports=app=>{
     } 
     
   ))
+
+  passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_ID,
+    clientSecret: process.env.FACEBOOK_SECRET,
+    callbackURL: process.env.FACEBOOK_CALLBACK,
+    profileFields:['email','displayName'], //取得使用者資料的哪些欄位,並回傳至 callback 的 profile 參數
+  },
+  (accessToken, refreshToken, profile, done) => {
+    const { name, email } = profile._json
+    User.findOne({ email })
+      .then(user => {
+        if (user) return done(null, user)
+        const randomPassword = Math.random().toString(36).slice(-8)
+        bcrypt
+          .genSalt(10)
+          .then(salt => bcrypt.hash(randomPassword, salt))
+          .then(hash => User.create({
+            name,
+            email,
+            password: hash
+          }))
+          .then(user => done(null, user))
+          .catch(err => done(err, false))
+      })
+  }))
+
   passport.serializeUser((user, done) => {
     done(null, user.id)
   })
@@ -31,6 +60,9 @@ module.exports=app=>{
       .lean()
       .then(user => done(null, user))
       .catch(err => done(err, null))})
+
+  
+  
 }
 
 

@@ -7,6 +7,9 @@ const routes=require('./routes')
 const methodOverride = require('method-override') 
 const usePassPort=require('./config/passport')
 const flash=require('connect-flash')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 require('./config/mongoose')
 
 
@@ -18,7 +21,7 @@ app.set('view engine', 'hbs')
 
 
 app.use(session({
-  secret: 'ThisIsMySecret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true
 }))
