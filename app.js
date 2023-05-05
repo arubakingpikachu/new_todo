@@ -7,6 +7,7 @@ const routes=require('./routes')
 const methodOverride = require('method-override') 
 const usePassPort=require('./config/passport')
 const flash=require('connect-flash')
+const PORT = process.env.PORT || 3000
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
@@ -46,5 +47,5 @@ app.use(routes)
 
 
 app.listen(3000,()=>{
-  console.log('App is running on http://localhost:3000')
+  console.log(`App is running on http://localhost:${PORT}`)
 })
